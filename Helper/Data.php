@@ -135,6 +135,19 @@ class Data extends CoreHelper
                 $hook->getNonceCount(),
                 $hook->getClientNonce(),
                 $hook->getOpaque());
+        } else if ($authentication === Authentication::OAUTH1) {
+            $authentication = $this->getOAuth1AuthHeader(
+                $url,
+                $method,
+                $username,
+                $hook->getRealm(),
+                $password,
+                $hook->getNonce(),
+                $hook->getAlgorithm(),
+                $hook->getQop(),
+                $hook->getNonceCount(),
+                $hook->getClientNonce(),
+                $hook->getOpaque());
         }
         $body        = $log ? $log->getBody() : $this->generateLiquidTemplate($item, $hook->getBody());
         $headers     = $hook->getHeaders();
@@ -253,6 +266,33 @@ class Data extends CoreHelper
 
         return $digestHeader;
     }
+
+    /**
+     * @param $url
+     * @param $method
+     * @param $username
+     * @param $realm
+     * @param $password
+     * @param $nonce
+     * @param $algorithm
+     * @param $qop
+     * @param $nonceCount
+     * @param $clientNonce
+     * @param $opaque
+     * @return string
+     */
+    public function getOAuth1AuthHeader($url, $method, $username, $realm, $password, $nonce, $algorithm, $qop, $nonceCount, $clientNonce, $opaque)
+    {
+        $uri          = parse_url($url)[2];
+        $method       = $method ?: 'GET';
+        $A1           = md5("{$username}:{$realm}:{$password}");
+        $A2           = md5("{$method}:{$uri}");
+        $response     = md5("{$A1}:{$nonce}:{$nonceCount}:{$clientNonce}:{$qop}:${A2}");
+        $digestHeader = "Digest username=\"{$username}\", realm=\"{$realm}\", nonce=\"{$nonce}\", uri=\"{$uri}\", cnonce=\"{$clientNonce}\", nc={$nonceCount}, qop=\"{$qop}\", response=\"{$response}\", opaque=\"{$opaque}\", algorithm=\"{$algorithm}\"";
+
+        return $digestHeader;
+    }
+
 
     /**
      * @param $username

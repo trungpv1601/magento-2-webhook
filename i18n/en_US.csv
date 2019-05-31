@@ -112,6 +112,7 @@ Hook,Hook
 "--Please Select--","--Please Select--"
 Basic,Basic
 Digest,Digest
+"OAuth 1.0","OAuth 1.0"
 "All Store Views","All Store Views"
 Preview,Preview
 "Insert Variables","Insert Variables"
