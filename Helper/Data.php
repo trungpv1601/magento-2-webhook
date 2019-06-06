@@ -135,8 +135,8 @@ class Data extends CoreHelper
                 $hook->getNonceCount(),
                 $hook->getClientNonce(),
                 $hook->getOpaque());
-        } else if ($authentication === Authentication::OAUTH1) {
-            $authentication = $this->getOAuth1AuthHeader(
+        } else if ($authentication === Authentication::OAUTH) { // trungpv
+            $authentication = $this->getOAuthAuthHeader(
                 $url,
                 $method,
                 $username,
@@ -267,21 +267,8 @@ class Data extends CoreHelper
         return $digestHeader;
     }
 
-    /**
-     * @param $url
-     * @param $method
-     * @param $username
-     * @param $realm
-     * @param $password
-     * @param $nonce
-     * @param $algorithm
-     * @param $qop
-     * @param $nonceCount
-     * @param $clientNonce
-     * @param $opaque
-     * @return string
-     */
-    public function getOAuth1AuthHeader($url, $method, $username, $realm, $password, $nonce, $algorithm, $qop, $nonceCount, $clientNonce, $opaque)
+    // trungpv
+    public function getOAuthAuthHeader($url, $method, $username, $realm, $password, $nonce, $algorithm, $qop, $nonceCount, $clientNonce, $opaque)
     {
         $uri          = parse_url($url)[2];
         $method       = $method ?: 'GET';
@@ -292,7 +279,6 @@ class Data extends CoreHelper
 
         return $digestHeader;
     }
-
 
     /**
      * @param $username
